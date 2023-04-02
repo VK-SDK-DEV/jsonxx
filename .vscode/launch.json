@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "Python: Run example",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/starting.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
