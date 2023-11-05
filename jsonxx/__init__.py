@@ -7,7 +7,7 @@
 """
 
 __author__ = 'SPRAVEDLIVO'
-__version__ = '1.0'
+__version__ = '1.1'
 __email__ = 'admin@spravedlivo.dev'
 
 

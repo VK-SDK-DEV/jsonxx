@@ -1,4 +1,7 @@
-class ExtensionBase:
+from .interface import Interface, implement
+
+
+class ExtensionBase(metaclass=Interface):
 
     classes = {}
 
@@ -39,9 +42,13 @@ class ExtensionBase:
         if self.saver is not None and callable(self.saver):
             return self.saver(self)
 
+    @implement
+    def accept(self): pass
+    @implement
+    def dumps(self): pass
+
     @classmethod
-    def get_class(cls, data, *args, init=True, **kwargs):
+    def get_class(cls, data, *args, init=True, accept=False, **kwargs):
         for klass, cl in cls.classes.items():
             if isinstance(data, cl):
                 return klass(data, *args, **kwargs) if init else klass
-        return data

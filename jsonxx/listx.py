@@ -1,7 +1,9 @@
 from .base import ExtensionBase
 from typing import TypeVar, Self
+import json
 
 T = TypeVar("T")
+
 
 class ListX(ExtensionBase, list[T]):
     def __getitem__(self, key) -> T | None:
@@ -49,5 +51,12 @@ class ListX(ExtensionBase, list[T]):
         else:
             self.append(other)
         return self
+
+    @staticmethod
+    def accept(data):
+        return json.loads(data)
+    
+    def dumps(self):
+        return json.dumps(self)
 
     get = __getitem__

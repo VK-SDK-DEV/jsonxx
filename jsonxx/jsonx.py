@@ -13,13 +13,27 @@ Indent = Optional[int]
 
 class JsonX:
     def __new__(cls, data, saver: Optional[Callable[[Dumpable], NoneType]] = None):
-        klass = ExtensionBase.get_class(data, init=False)
-        if klass in ExtensionBase.classes:
-            return klass(data, saver)
+        klass = ExtensionBase.get_class(data, saver, init=True)
+        if klass is not None:
+            return klass
         else:
             raise ValueError(
                 f"No appropriate class found for {data.__class__.__name__}")
 
+    @classmethod
+    def accept(cls, data, *init_args, **init_kwargs):
+        for cls, superclass in ExtensionBase.classes.items():
+            if isinstance(data, cls):
+                return data
+            elif (clsm := getattr(cls, "accept", None)) is not None:
+                try:
+                    parsed = clsm(data)
+                    if not isinstance(parsed, cls | superclass): continue
+                    return cls(parsed, *init_args, **init_kwargs)
+                except Exception:
+                    continue
+        return data
+    
 
 def save(file: str, obj: Dumpable, indent: Indent = None):
     with open(file, "w", encoding="utf-8") as f:
