@@ -7,7 +7,7 @@ T = TypeVar("T")
 
 class ListX(ExtensionBase, list[T]):
     def __getitem__(self, key) -> T | None:
-        if isinstance(key, slice) or key < len(self):
+        if isinstance(key, slice) or (key if key >= 0 else abs(key+1)) < len(self):
             return list.__getitem__(self, key)
         return None
 
@@ -46,7 +46,13 @@ class ListX(ExtensionBase, list[T]):
 
     def __add__(self, other) -> Self:
         if isinstance(other, list | ListX):
-            self += other
+            return ListX(super().__add__(other))
+        else:
+            return self + ListX([other])
+
+    def __iadd__(self, other) -> Self:
+        if isinstance(other, list | ListX):
+            super().__iadd__(other)
             self.save()
         else:
             self.append(other)
